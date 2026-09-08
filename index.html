@@ -76,7 +76,12 @@
   @keyframes spin{ to{ transform:rotate(360deg); } }
 
   /* ---------- Cover ---------- */
-  #cover{ min-height:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 30px; position:relative; }
+  #cover{
+    min-height:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:40px 30px; position:relative;
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  #cover.leaving{ opacity:0; transform:scale(1.05); pointer-events:none; }
   .eyebrow{ font-weight:400; font-size:12px; letter-spacing:0.26em; color:var(--ink-dim); }
   .cover-for{ font-size:11px; letter-spacing:0.1em; color:var(--gold-soft); margin-top:14px; }
   .cover-names{ font-family:'Cormorant Garamond'; font-weight:500; font-style:italic; font-size:52px; line-height:1.15; color:var(--mahogany); margin:18px 0 4px; }
@@ -87,8 +92,9 @@
   .cover-foot{ position:absolute; bottom:26px; font-size:10.5px; letter-spacing:0.15em; color:var(--gold-soft); }
 
   /* ---------- App shell ---------- */
-  #app{ display:none; flex-direction:column; height:100%; }
+  #app{ display:none; flex-direction:column; height:100%; opacity:0; transition:opacity 0.9s ease; }
   #app.open{ display:flex; }
+  #app.visible{ opacity:1; }
 
   .app-header{
     flex:0 0 auto;
@@ -117,6 +123,7 @@
     transform:translateY(0);
     pointer-events:auto;
     z-index:2;
+    transition-delay:0.15s;
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -213,9 +220,7 @@
     <button class="music-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Putar musik">
       <svg id="musicIcon" viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
     </button>
-    <audio id="bgm" loop preload="none">
-      <source src="" type="audio/mpeg">
-    </audio>
+    <div id="yt-player" style="position:absolute; top:-9999px; left:-9999px; width:1px; height:1px; overflow:hidden;"></div>
 
     <div class="app-header">
       <p class="names">Dian &amp; Rindi</p>
@@ -328,12 +333,47 @@
 </div>
 
 <script>
+  // ---- YouTube background music (official embedded player, no download/rip) ----
+  let ytPlayer = null;
+  let ytReady = false;
+  let wantPlayOnReady = false;
+
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+
+  function onYouTubeIframeAPIReady(){
+    ytPlayer = new YT.Player('yt-player', {
+      videoId: 'x0_rFs1wqK4',
+      playerVars: { autoplay: 0, controls: 0, disablekb: 1, loop: 1, playlist: 'x0_rFs1wqK4', playsinline: 1 },
+      events: {
+        onReady: function(){
+          ytReady = true;
+          if (wantPlayOnReady){
+            ytPlayer.playVideo();
+            document.getElementById('musicBtn').classList.add('spinning');
+          }
+        }
+      }
+    });
+  }
+
   function openInvitation(){
-    document.getElementById('cover').style.display = 'none';
-    document.getElementById('app').classList.add('open');
-    const bgm = document.getElementById('bgm');
-    if (bgm.querySelector('source').src) {
-      bgm.play().then(()=>{ document.getElementById('musicBtn').classList.add('spinning'); }).catch(()=>{});
+    const cover = document.getElementById('cover');
+    const app = document.getElementById('app');
+
+    cover.classList.add('leaving');
+    app.classList.add('open');
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{ app.classList.add('visible'); });
+    });
+    setTimeout(()=>{ cover.style.display = 'none'; }, 820);
+
+    if (ytReady && ytPlayer){
+      ytPlayer.playVideo();
+      document.getElementById('musicBtn').classList.add('spinning');
+    } else {
+      wantPlayOnReady = true;
     }
   }
 
@@ -345,11 +385,11 @@
   }
 
   function toggleMusic(){
-    const bgm = document.getElementById('bgm');
     const btn = document.getElementById('musicBtn');
-    if (!bgm.querySelector('source').src) return;
-    if (bgm.paused){ bgm.play(); btn.classList.add('spinning'); }
-    else { bgm.pause(); btn.classList.remove('spinning'); }
+    if (!ytReady || !ytPlayer) return;
+    const state = ytPlayer.getPlayerState();
+    if (state === 1){ ytPlayer.pauseVideo(); btn.classList.remove('spinning'); }
+    else { ytPlayer.playVideo(); btn.classList.add('spinning'); }
   }
 
   const target = new Date('2026-10-07T08:00:00+07:00').getTime();
