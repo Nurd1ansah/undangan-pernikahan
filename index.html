@@ -227,7 +227,7 @@
       </div>
 
       <div class="link-row">
-        <a class="pill-link" id="mapsLink" href="#" target="_blank" rel="noopener">Buka Peta Lokasi</a>
+        <a class="pill-link" id="mapsLink" href="#" target="https://maps.app.goo.gl/CGq8bYVCPqd3rFgi9" rel="noopener">Buka Peta Lokasi</a>
         <button class="pill-link" onclick="downloadICS()">Simpan ke Kalender</button>
       </div>
     </section>
@@ -280,7 +280,7 @@
   setInterval(tick, 1000);
 
   const addr = encodeURIComponent('Dusun Manis, Desa Cihirup');
-  document.getElementById('mapsLink').href = 'https://maps.app.goo.gl/CGq8bYVCPqd3rFgi9' + addr;
+  document.getElementById('mapsLink').href = 'https://www.google.com/maps/search/?api=1&query=' + addr;
 
   function downloadICS(){
     const ics = [
