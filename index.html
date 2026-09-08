@@ -18,7 +18,6 @@
     --ivory:#F1E6D6;
     --ivory-dim:#D9C7AC;
     --ink:#241009;
-    --app-vh: 100vh;
   }
 
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
@@ -104,10 +103,23 @@
     overflow-y:auto;
     padding:30px 28px 30px;
     text-align:center;
-    display:none;
     -webkit-overflow-scrolling:touch;
+    opacity:0;
+    transform:translateY(14px);
+    pointer-events:none;
+    transition:opacity 0.45s ease, transform 0.45s ease;
+    z-index:1;
   }
-  .page.active{ display:block; }
+  .page.active{
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+    z-index:2;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .page{ transition:none; }
+  }
 
   .section-label{ font-size:11.5px; letter-spacing:0.2em; color:var(--gold-dim); }
 
@@ -148,13 +160,10 @@
   .gallery-grid img{ width:100%; height:170px; object-fit:cover; border:1px solid var(--gold-dim); }
   .gallery-grid img:first-child{ grid-column:1 / -1; height:220px; }
 
-  /* RSVP page */
-  .rsvp-text{ font-size:12.5px; line-height:1.8; color:var(--ivory-dim); max-width:290px; margin:0 auto 26px; }
-  .wa-btn{ background:var(--gold-dim); color:var(--mahogany-deepest); font-weight:500; font-size:12.5px; letter-spacing:0.07em; padding:13px 26px; border-radius:2px; text-decoration:none; display:inline-flex; align-items:center; gap:9px; }
-  .wa-btn:active{ background:var(--gold-soft); }
-  .wa-btn svg{ width:15px; height:15px; }
-  .closing-text{ font-size:12.5px; line-height:1.8; color:var(--ivory-dim); max-width:290px; margin:30px auto 0; }
-  .closing-names{ font-family:'Cormorant Garamond'; font-style:italic; font-weight:500; font-size:22px; color:var(--gold-soft); margin-top:14px; }
+  /* Closing page */
+  .closing-text{ font-size:12.5px; line-height:1.8; color:var(--ivory-dim); max-width:290px; margin:0 auto; }
+  .closing-names{ font-family:'Cormorant Garamond'; font-style:italic; font-weight:500; font-size:24px; color:var(--gold-soft); margin-top:18px; }
+  #page-closing{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
 
   /* Bottom nav */
   .bottom-nav{
@@ -175,8 +184,6 @@
   .nav-btn svg{ width:18px; height:18px; stroke:currentColor; fill:none; }
   .nav-btn span{ font-size:9px; letter-spacing:0.05em; }
   .nav-btn.active{ color:var(--gold-soft); }
-
-  @media (prefers-reduced-motion: reduce){ .music-btn.spinning svg{ animation:none; } }
 </style>
 </head>
 <body>
@@ -220,7 +227,7 @@
         <p class="home-greet">Halo, teman-teman! Terima kasih sudah meluangkan waktu membuka undangan ini.</p>
         <p class="quote-text">"Di antara tanda kebesaran-Nya, diciptakan-Nya pasangan untuk kita, agar hati menjadi tenteram bersamanya, serta ditumbuhkan-Nya rasa cinta dan kasih sayang di antara keduanya."</p>
         <p class="quote-source">QS. Ar-Rum : 21</p>
-        <p class="home-note">Setelah sekian lama saling mengenal, kami memutuskan untuk melanjutkan ke jenjang pernikahan. Yuk, rayakan momen ini bareng kami &mdash; jangan lupa mampir ke halaman Acara &amp; RSVP ya!</p>
+        <p class="home-note">Setelah sekian lama saling mengenal, kami memutuskan untuk melanjutkan ke jenjang pernikahan. Yuk, rayakan momen ini bareng kami &mdash; jangan lupa mampir ke halaman Acara ya!</p>
       </section>
 
       <section class="page" id="page-couple" data-page="couple">
@@ -284,13 +291,7 @@
         </div>
       </section>
 
-      <section class="page" id="page-rsvp" data-page="rsvp">
-        <p class="section-label">Konfirmasi Kehadiran</p>
-        <p class="rsvp-text">Buat teman-teman yang bisa hadir, kabari kami ya biar makin seru harinya. Yang belum sempat datang, doanya sudah lebih dari cukup buat kami.</p>
-        <a class="wa-btn" href="https://wa.me/6281222379951?text=Halo%20Dian%2C%20aku%20mau%20konfirmasi%20kehadiran%20di%20pernikahan%20kamu%20%26%20Rindi%20ya" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2m0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.13.82.84-3.05-.2-.31a8.24 8.24 0 1 1 6.99 3.87m4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.17.24-.64.81-.78.97-.14.17-.29.19-.53.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.24-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.24-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.36-.77-1.86-.2-.49-.41-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.22.24-.87.85-.87 2.08 0 1.22.89 2.4 1.02 2.57.12.16 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28"/></svg>
-          Konfirmasi via WhatsApp
-        </a>
+      <section class="page" id="page-closing" data-page="closing">
         <div class="hairline"></div>
         <p class="closing-text">Terima kasih sudah menyempatkan diri membuka undangan ini. Sampai jumpa di hari bahagia kami!</p>
         <p class="closing-names">Dian &amp; Rindi</p>
@@ -315,9 +316,9 @@
         <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><circle cx="9" cy="10" r="1.7"/><path d="M4.5 17.5l4.5-5 3 3.2 2.5-3 5 4.8"/></svg>
         <span>Galeri</span>
       </button>
-      <button class="nav-btn" data-target="rsvp" onclick="showPage('rsvp')">
-        <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.4 8.5 8.5 0 0 1-4-.98L3 20l1.1-3.4a8.4 8.4 0 0 1-1-4A8.38 8.38 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5Z"/></svg>
-        <span>RSVP</span>
+      <button class="nav-btn" data-target="closing" onclick="showPage('closing')">
+        <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.3-8.8C1.3 8.9 2.7 5.5 6 4.8c2-.4 3.7.6 6 3 2.3-2.4 4-3.4 6-3 3.3.7 4.7 4.1 3.3 7.4C19 16.5 12 21 12 21Z"/></svg>
+        <span>Penutup</span>
       </button>
     </nav>
   </div>
@@ -337,7 +338,8 @@
   function showPage(name){
     document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === name));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.target === name));
-    document.getElementById('pages').querySelector('.page.active').scrollTop = 0;
+    const activePage = document.getElementById('pages').querySelector('.page.active');
+    if (activePage) activePage.scrollTop = 0;
   }
 
   function toggleMusic(){
